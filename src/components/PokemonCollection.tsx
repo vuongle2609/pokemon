@@ -1,33 +1,52 @@
 import React from 'react'
-import { Pokemon } from '../interface'
+import { Pokemon, Detail, PokemonDetail } from '../interface'
 import PokemonList from './PokemonList'
 import "./pokemon.css";
 
 interface Props {
-    pokemons: Pokemon[]
+    pokemons: PokemonDetail[],
+    viewDetail: Detail,
+    setDetail: React.Dispatch<React.SetStateAction<Detail>>
 }
 
 const PokemonCollection: React.FC<Props> = (props) => {
-    const { pokemons } = props
+    const { pokemons, viewDetail, setDetail } = props
+
+    const selectPokemon = (id: number) => {
+        if (viewDetail.isOpended) return
+        setDetail({
+            id: id,
+            isOpended: true
+        })
+    }
 
     return (
-        <div>
-            <section className="collection-container">
+        <>
+            <section className={viewDetail.isOpended ? "collection-container-active" : "collection-container"}>
+                {viewDetail.isOpended ? (
+                    <div className="overlay">
+
+                    </div>
+                ) : (
+                    false
+                )}
                 {pokemons.map(pokemon => {
-                    console.log(pokemon)
                     return (
-                        <div className="">
+                        <div onClick={() => selectPokemon(pokemon.id)}>
                             <PokemonList
+                                viewDetail={viewDetail}
+                                setDetail={setDetail}
                                 key={pokemon.id}
                                 name={pokemon.name}
                                 id={pokemon.id}
+                                abilities={pokemon.abilities}
                                 image={pokemon.sprites.front_default}
                             />
                         </div>
                     )
                 })}
             </section>
-        </div>
+        </>
     )
 }
 
